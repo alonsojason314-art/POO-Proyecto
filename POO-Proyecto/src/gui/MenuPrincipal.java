@@ -1,5 +1,7 @@
 package gui;
 
+import control.Controlusuarios;
+import control.Resultadologin;
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,6 +19,9 @@ public class MenuPrincipal extends JFrame {
     JLabel usu;
     JTextField Tusu;
     JPasswordField Ctsu;
+
+    // Control del login (un solo objeto para esta ventana)
+    private final Controlusuarios controlUsuarios = new Controlusuarios();
 
     public MenuPrincipal() {
 
@@ -74,10 +79,33 @@ public class MenuPrincipal extends JFrame {
         // BOTON ACCEDER
         JButton acceder = crearBoton("Acceder");
         acceder.setBounds(175, 395, 300, 40);
+        acceder.addActionListener(e -> iniciarSesion());
         add(acceder);
 
         // Enter = Acceder
         getRootPane().setDefaultButton(acceder);
+    }
+
+    // Evento del botón Acceder: valida con el control y muestra el resultado
+    private void iniciarSesion() {
+        Resultadologin r = controlUsuarios.validarLogin(Tusu.getText(), Ctsu.getPassword());
+
+        if (!r.isExitoso()) {
+            JOptionPane.showMessageDialog(this, r.getMensaje(), "Acceso denegado",
+                    JOptionPane.WARNING_MESSAGE);
+            Ctsu.setText("");
+            Ctsu.requestFocus();
+            return;
+        }
+
+        JOptionPane.showMessageDialog(this, r.getMensaje(), "Acceso correcto",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        if (r.getUsuario().esAdministrador()) {
+            // TODO: abrir la ventana del administrador
+        } else {
+            // TODO: abrir la ventana del reproductor (usuario normal)
+        }
     }
 
     // Carga una imagen y la escala al ancho indicado conservando su proporción
