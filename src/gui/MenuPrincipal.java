@@ -155,6 +155,8 @@ public class MenuPrincipal extends JFrame {
         return boton;
     }
 
+    
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(MenuPrincipal::new);
     }
