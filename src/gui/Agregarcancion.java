@@ -1,4 +1,4 @@
-package adm;
+package gui;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
