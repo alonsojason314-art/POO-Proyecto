@@ -3,7 +3,7 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 
-public final class eliminarcancion extends JFrame {
+public final class EliminarCancion extends JFrame {
 
     JLabel lTitulo, lRecents, lCancion;
     JButton bAvatar, bPuntos, bLista, eliminar;
@@ -18,7 +18,7 @@ public final class eliminarcancion extends JFrame {
     Color colorGrisCampo = new Color(40, 40, 40);
     Color colorBorde = new Color(70, 70, 70);
 
-    public eliminarcancion() {
+    public EliminarCancion() {
         setTitle("Eliminar canción");
         setSize(650, 420);
         setLayout(null);
@@ -141,6 +141,6 @@ public final class eliminarcancion extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new eliminarcancion());
+        SwingUtilities.invokeLater(() -> new EliminarCancion());
     }
 }
