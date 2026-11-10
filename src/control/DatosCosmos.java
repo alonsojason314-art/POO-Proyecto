@@ -1,11 +1,13 @@
 package control;
 
+import archivos.GestorArchivos;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,33 +19,97 @@ public class DatosCosmos {
     public static final List<Cancion> CANCIONES = new ArrayList<>();
     public static final Map<String, List<Cancion>> PLAYLISTS = new LinkedHashMap<>();
 
+    public static final String[] GENEROS = {
+        "Pop", "Rock", "Hip Hop / Rap", "Synthwave", "City Pop",
+        "Indie", "Electrónica", "R&B", "Reggaetón", "Regional / Banda",
+        "Clásica", "Jazz", "Metal", "Alternativo", "Otro"
+    };
+
+    private static final String ARCHIVO_CANCIONES = "canciones_cosmos.dat";
+    private static final String ARCHIVO_PLAYLISTS = "playlists_cosmos.dat";
+    private static final GestorArchivos GESTOR = new GestorArchivos();
+
     static {
+        cargarDatos();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void cargarDatos() {
+        Object cancionesGuardadas = GESTOR.cargar(ARCHIVO_CANCIONES);
+        Object playlistsGuardadas = GESTOR.cargar(ARCHIVO_PLAYLISTS);
+
+        if (cancionesGuardadas instanceof List<?>) {
+            CANCIONES.clear();
+            CANCIONES.addAll((List<Cancion>) cancionesGuardadas);
+        } else {
+            cargarCancionesPorDefecto();
+        }
+
+        if (playlistsGuardadas instanceof Map<?, ?>) {
+            PLAYLISTS.clear();
+            PLAYLISTS.putAll((Map<String, List<Cancion>>) playlistsGuardadas);
+        } else if (PLAYLISTS.isEmpty() && CANCIONES.size() >= 6) {
+            List<Cancion> favs = new ArrayList<>();
+            favs.add(CANCIONES.get(0));
+            favs.add(CANCIONES.get(3));
+            PLAYLISTS.put("Favoritas Cosmos", favs);
+
+            List<Cancion> synth = new ArrayList<>();
+            synth.add(CANCIONES.get(1));
+            synth.add(CANCIONES.get(2));
+            PLAYLISTS.put("Noche Synthwave", synth);
+        }
+
+        ordenarYGuardar();
+    }
+
+    private static void cargarCancionesPorDefecto() {
         String letraDemo = "Si no encuentras\nmotivos\nPara seguir conmigo\n"
                 + "¿Para qué continuar?\nEs mejor terminar\ncomo amigos\n"
                 + "Que ser como\nenemigos\nEsperando atacar";
 
-        // Usamos rutas "COVER:..." para que cada canción/álbum/artista tenga su propia portada única
-        CANCIONES.add(new Cancion("C01", "Starboy", "Pop/R&B", "The Weeknd", "2016", "Starboy", "3:50", "COVER:Starboy:#D6249F:#1A103C", letraDemo));
-        CANCIONES.add(new Cancion("C02", "Blinding Lights", "Synthwave", "The Weeknd", "2020", "After Hours", "3:20", "COVER:After Hours:#FF2A54:#2B0918", letraDemo));
-        CANCIONES.add(new Cancion("C03", "Without Me", "Hip Hop", "Eminem", "2002", "The Eminem Show", "4:50", "COVER:Eminem:#00B4D8:#03045E", letraDemo));
-        CANCIONES.add(new Cancion("C04", "Stay With Me", "City Pop", "Miki Matsubara", "1979", "Pocket Park", "5:12", "COVER:Pocket Park:#9D4EDD:#240046", letraDemo));
-        CANCIONES.add(new Cancion("C05", "Do I Wanna Know?", "Indie Rock", "Arctic Monkeys", "2013", "AM", "4:32", "COVER:AM:#F77F00:#1F1300", letraDemo));
-        CANCIONES.add(new Cancion("C06", "Instant Crush", "Electronic", "Daft Punk", "2013", "Random Access Memories", "5:37", "COVER:RAM:#06D6A0:#073B4C", letraDemo));
-
-        List<Cancion> favs = new ArrayList<>();
-        favs.add(CANCIONES.get(0));
-        favs.add(CANCIONES.get(3));
-        PLAYLISTS.put("Favoritas Cosmos", favs);
-
-        List<Cancion> synth = new ArrayList<>();
-        synth.add(CANCIONES.get(1));
-        synth.add(CANCIONES.get(5));
-        PLAYLISTS.put("Noche Synthwave", synth);
+        // Aquí pueden agregar las 50 canciones iniciales
+        CANCIONES.add(new Cancion("C01", "Starboy", "R&B", "The Weeknd", "2016", "Starboy", "03:50", "COVER:Starboy:#D6249F:#1A103C", letraDemo));
+        CANCIONES.add(new Cancion("C02", "Blinding Lights", "Synthwave", "The Weeknd", "2020", "After Hours", "03:20", "COVER:After Hours:#FF2A54:#2B0918", letraDemo));
+        CANCIONES.add(new Cancion("C03", "Without Me", "Hip Hop / Rap", "Eminem", "2002", "The Eminem Show", "04:50", "COVER:Eminem:#00B4D8:#03045E", letraDemo));
+        CANCIONES.add(new Cancion("C04", "Stay With Me", "City Pop", "Miki Matsubara", "1979", "Pocket Park", "05:12", "COVER:Pocket Park:#9D4EDD:#240046", letraDemo));
+        CANCIONES.add(new Cancion("C05", "Do I Wanna Know?", "Indie", "Arctic Monkeys", "2013", "AM", "04:32", "COVER:AM:#F77F00:#1F1300", letraDemo));
+        CANCIONES.add(new Cancion("C06", "Instant Crush", "Electrónica", "Daft Punk", "2013", "Random Access Memories", "05:37", "COVER:RAM:#06D6A0:#073B4C", letraDemo));
     }
 
     /**
-     * Carga un icono de /recursos, un archivo del disco duro, o genera una carátula musical única.
+     * Ordena las canciones alfabéticamente por título (ignorando mayúsculas/minúsculas)
+     * y guarda las listas en los archivos binarios mediante GestorArchivos.
      */
+    public static void ordenarYGuardar() {
+        Collections.sort(CANCIONES, (Cancion c1, Cancion c2) -> {
+            String t1 = c1.getTitulo() == null ? "" : c1.getTitulo().trim();
+            String t2 = c2.getTitulo() == null ? "" : c2.getTitulo().trim();
+            return t1.compareToIgnoreCase(t2);
+        });
+        GESTOR.guardar(new ArrayList<>(CANCIONES), ARCHIVO_CANCIONES);
+        GESTOR.guardar(new LinkedHashMap<>(PLAYLISTS), ARCHIVO_PLAYLISTS);
+    }
+
+    /**
+     * Valida que el año tenga 4 dígitos numéricos y esté entre 1900 y 2026.
+     */
+    public static boolean esAnioValido(String anio) {
+        if (anio == null || !anio.matches("\\d{4}")) {
+            return false;
+        }
+        int valor = Integer.parseInt(anio);
+        return valor >= 1900 && valor <= 2026;
+    }
+
+    /**
+     * Valida que la duración tenga formato mm:ss (minutos de 1 a 2 dígitos, segundos de 00 a 59).
+     */
+    public static boolean esDuracionValida(String duracion) {
+        if (duracion == null) return false;
+        return duracion.matches("^\\d{1,2}:[0-5]\\d$");
+    }
+
     public static ImageIcon cargarIcono(String ruta, int ancho, int alto) {
         if (ruta == null || ruta.trim().isEmpty()) {
             return generarPortadaMusical("Cosmos", "#D6249F", "#1A1A1A", ancho, alto);
@@ -90,7 +156,6 @@ public class DatosCosmos {
         g2.setPaint(gp);
         g2.fill(new RoundRectangle2D.Double(0, 0, ancho, alto, 14, 14));
 
-        // Disco decorativo semitransparente
         int r = (int) (Math.min(ancho, alto) * 0.65);
         int cx = (ancho - r) / 2;
         int cy = (alto - r) / 2;
@@ -99,7 +164,6 @@ public class DatosCosmos {
         g2.setColor(new Color(255, 255, 255, 45));
         g2.drawOval(cx, cy, r, r);
 
-        // Iniciales o nombre corto
         String iniciales = titulo.trim().isEmpty() ? "♪" : titulo.trim().substring(0, Math.min(2, titulo.trim().length())).toUpperCase();
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("SansSerif", Font.BOLD, Math.max(12, ancho / 4)));

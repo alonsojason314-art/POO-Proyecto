@@ -16,7 +16,8 @@ public class Agregarcancion extends JDialog {
     private static final Color ROSA_HOVER = new Color(0xE8, 0x4F, 0xB8);
     private static final Color CAMPO = new Color(0x1A, 0x1A, 0x1A);
 
-    private JTextField txtClave, txtTitulo, txtArtista, txtAlbum, txtGenero, txtAnio, txtDuracion;
+    private JTextField txtClave, txtTitulo, txtArtista, txtAlbum, txtAnio, txtDuracion;
+    private JComboBox<String> comboGenero;
     private JTextArea txtLetra;
     private JLabel lblPreviewImg, lblRutaImg;
     private String rutaImagenSeleccionada = "";
@@ -52,9 +53,21 @@ public class Agregarcancion extends JDialog {
         txtTitulo = agregarFila(formCampos, "Título:");
         txtArtista = agregarFila(formCampos, "Artista:");
         txtAlbum = agregarFila(formCampos, "Álbum:");
-        txtGenero = agregarFila(formCampos, "Género:");
-        txtAnio = agregarFila(formCampos, "Año:");
-        txtDuracion = agregarFila(formCampos, "Duración (mm:ss):");
+
+        // JComboBox para Género
+        JLabel lblGen = new JLabel("Género:");
+        lblGen.setForeground(Color.WHITE);
+        lblGen.setFont(new Font("SansSerif", Font.BOLD, 13));
+        formCampos.add(lblGen);
+
+        comboGenero = new JComboBox<>(DatosCosmos.GENEROS);
+        comboGenero.setBackground(CAMPO);
+        comboGenero.setForeground(Color.WHITE);
+        comboGenero.setBorder(BorderFactory.createLineBorder(ROSA, 1));
+        formCampos.add(comboGenero);
+
+        txtAnio = agregarFila(formCampos, "Año (4 dígitos, ej. 2024):");
+        txtDuracion = agregarFila(formCampos, "Duración (mm:ss, ej. 03:45):");
 
         panelCentral.add(formCampos, BorderLayout.CENTER);
 
@@ -182,7 +195,7 @@ public class Agregarcancion extends JDialog {
         txtTitulo.setText("");
         txtArtista.setText("");
         txtAlbum.setText("");
-        txtGenero.setText("");
+        comboGenero.setSelectedIndex(0);
         txtAnio.setText("");
         txtDuracion.setText("");
         txtLetra.setText("");
@@ -196,27 +209,41 @@ public class Agregarcancion extends JDialog {
         String titulo = txtTitulo.getText().trim();
         String artista = txtArtista.getText().trim();
         String album = txtAlbum.getText().trim();
-        String genero = txtGenero.getText().trim();
+        String genero = (String) comboGenero.getSelectedItem();
         String anio = txtAnio.getText().trim();
         String duracion = txtDuracion.getText().trim();
         String letra = txtLetra.getText().trim();
 
-        if (clave.isEmpty() || titulo.isEmpty() || artista.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor completa al menos Clave, Título y Artista.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        // 1. Validar que todos los campos obligatorios estén llenos
+        if (clave.isEmpty() || titulo.isEmpty() || artista.isEmpty() || album.isEmpty() || anio.isEmpty() || duracion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos (Clave, Título, Artista, Álbum, Año y Duración) son obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
+        // 2. Validar unicidad de clave y título
         for (Cancion c : DatosCosmos.CANCIONES) {
             if (c.getClave().equalsIgnoreCase(clave)) {
-                JOptionPane.showMessageDialog(this, "Ya existe una canción con la clave " + clave, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Ya existe una canción registrada con la clave: " + clave, "Clave duplicada", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (c.getTitulo().equalsIgnoreCase(titulo) && c.getArtista().equalsIgnoreCase(artista)) {
+                JOptionPane.showMessageDialog(this, "Esta canción ya se encuentra registrada para ese artista.", "Canción duplicada", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
 
-        if (album.isEmpty()) album = "Sencillo";
-        if (genero.isEmpty()) genero = "Pop";
-        if (anio.isEmpty()) anio = "2026";
-        if (duracion.isEmpty()) duracion = "3:30";
+        // 3. Validar formato de Año
+        if (!DatosCosmos.esAnioValido(anio)) {
+            JOptionPane.showMessageDialog(this, "El Año debe ser un número de 4 dígitos entre 1900 y 2026 (ej. 2020).", "Año inválido", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 4. Validar formato de Duración (mm:ss)
+        if (!DatosCosmos.esDuracionValida(duracion)) {
+            JOptionPane.showMessageDialog(this, "La Duración debe tener formato mm:ss con segundos entre 00 y 59 (ej. 03:45 o 4:20).", "Duración inválida", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         if (letra.isEmpty()) letra = "Letra no disponible.";
 
         String rutaFinal = rutaImagenSeleccionada.isEmpty()
@@ -225,8 +252,9 @@ public class Agregarcancion extends JDialog {
 
         Cancion nueva = new Cancion(clave, titulo, genero, artista, anio, album, duracion, rutaFinal, letra);
         DatosCosmos.CANCIONES.add(nueva);
+        DatosCosmos.ordenarYGuardar(); // Ordena alfabéticamente y guarda en archivo
 
-        JOptionPane.showMessageDialog(this, "Canción '" + titulo + "' agregada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Canción '" + titulo + "' agregada y ordenada alfabéticamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         dispose();
     }
 }
