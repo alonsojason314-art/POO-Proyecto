@@ -187,5 +187,15 @@ public class EliminarCancion extends JDialog {
             JOptionPane.showMessageDialog(this, "Canción eliminada correctamente.", "Eliminada", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         }
+        
+        if (resp == JOptionPane.YES_OPTION) {
+            DatosCosmos.CANCIONES.remove(cancionSeleccionada);
+            for (List<Cancion> lista : DatosCosmos.PLAYLISTS.values()) {
+                lista.remove(cancionSeleccionada);
+            }
+            DatosCosmos.ordenarYGuardar(); // <-- Guarda la eliminación en el archivo
+            JOptionPane.showMessageDialog(this, "Canción eliminada correctamente.", "Eliminada", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        }
     }
 }
