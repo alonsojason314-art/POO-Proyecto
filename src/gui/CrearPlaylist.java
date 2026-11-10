@@ -113,5 +113,9 @@ public class CrearPlaylist extends JDialog {
         DatosCosmos.PLAYLISTS.put(nombre, seleccionadas);
         JOptionPane.showMessageDialog(this, "Playlist '" + nombre + "' creada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         dispose();
+        DatosCosmos.PLAYLISTS.put(nombre, seleccionadas);
+        DatosCosmos.ordenarYGuardar(); // <-- Guarda la nueva playlist en el archivo
+        JOptionPane.showMessageDialog(this, "Playlist '" + nombre + "' creada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        dispose();
     }
 }
