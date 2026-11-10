@@ -68,11 +68,7 @@ public class EliminarCancion extends JDialog {
         norte.add(comboCanciones);
         add(norte, BorderLayout.NORTH);
 
-<<<<<<< Updated upstream
-        //  Vista previa de la canción a eliminar
-=======
         // Centro: Vista previa de la canción a eliminar
->>>>>>> Stashed changes
         JPanel centro = new JPanel(new BorderLayout(15, 0));
         centro.setBackground(CAMPO);
         centro.setBorder(BorderFactory.createCompoundBorder(
@@ -94,11 +90,7 @@ public class EliminarCancion extends JDialog {
 
         add(centro, BorderLayout.CENTER);
 
-<<<<<<< Updated upstream
-        //  Botón Eliminar
-=======
         // Sur: Botón Eliminar
->>>>>>> Stashed changes
         JPanel sur = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 12));
         sur.setBackground(FONDO);
 
@@ -140,64 +132,6 @@ public class EliminarCancion extends JDialog {
             areaDetalle.setText("No hay canciones registradas.");
             lblPortada.setIcon(null);
         }
-<<<<<<< Updated upstream
-=======
-    }
-
-    private void seleccionarDesdeCombo() {
-        int idx = comboCanciones.getSelectedIndex();
-        if (idx >= 0 && idx < DatosCosmos.CANCIONES.size()) {
-            mostrarCancion(DatosCosmos.CANCIONES.get(idx));
-        }
-    }
-
-    private void buscarPorTexto() {
-        String q = txtBusqueda.getText().trim().toLowerCase();
-        if (q.isEmpty()) return;
-
-        for (int i = 0; i < DatosCosmos.CANCIONES.size(); i++) {
-            Cancion c = DatosCosmos.CANCIONES.get(i);
-            if (c.getClave().toLowerCase().equals(q) || c.getTitulo().toLowerCase().contains(q)) {
-                comboCanciones.setSelectedIndex(i);
-                mostrarCancion(c);
-                return;
-            }
-        }
-        JOptionPane.showMessageDialog(this, "No se encontró ninguna canción con: " + q, "Sin resultados", JOptionPane.WARNING_MESSAGE);
-    }
-
-    private void mostrarCancion(Cancion c) {
-        this.cancionSeleccionada = c;
-        areaDetalle.setText(
-                "CLAVE: " + c.getClave() + "\n" +
-                "TÍTULO: " + c.getTitulo() + "\n" +
-                "ARTISTA: " + c.getArtista() + "\n" +
-                "ÁLBUM: " + c.getAlbum() + "\n" +
-                "GÉNERO: " + c.getGenero() + "\n" +
-                "DURACIÓN: " + c.getDuracion()
-        );
-        lblPortada.setIcon(DatosCosmos.cargarIcono(c.getRutaImagen(), 110, 110));
-    }
-
-    private void confirmarEliminacion() {
-        if (cancionSeleccionada == null) {
-            JOptionPane.showMessageDialog(this, "Selecciona una canción para eliminar.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int resp = JOptionPane.showConfirmDialog(this,
-                "¿Seguro que deseas eliminar '" + cancionSeleccionada.getTitulo() + "'?",
-                "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-
-        if (resp == JOptionPane.YES_OPTION) {
-            DatosCosmos.CANCIONES.remove(cancionSeleccionada);
-            for (List<Cancion> lista : DatosCosmos.PLAYLISTS.values()) {
-                lista.remove(cancionSeleccionada);
-            }
-            JOptionPane.showMessageDialog(this, "Canción eliminada correctamente.", "Eliminada", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
-        }
->>>>>>> Stashed changes
     }
 
     private void seleccionarDesdeCombo() {

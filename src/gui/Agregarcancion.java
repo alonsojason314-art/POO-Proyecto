@@ -1,4 +1,4 @@
-package adm;
+package gui;
 
 import control.Cancion;
 import control.DatosCosmos;
@@ -11,21 +11,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Agregarcancion extends JDialog {
 
-<<<<<<< Updated upstream
-    JLabel lTitulo, lRecents, lCancion, lArtista, lAlbum, lGenero, lRutaImagen;
-    JButton bAvatar, bPlus, bCerrar, bLista, bSubirImagen, nuevo, agregar;
-    JTextField tCancion, tArtista, tAlbum;
-    JComboBox<String> cbGenero; 
-    JTextArea tInformacion;
-    JScrollPane scrollInformacion;
-    String rutaImagenSeleccionada = "";
-
-    Color colorFondo = new Color(20, 20, 20);
-    Color colorRosa = new Color(230, 0, 115);
-    Color colorGrisPanel = new Color(30, 30, 30);
-    Color colorGrisCampo = new Color(40, 40, 40);
-    Color colorBorde = new Color(70, 70, 70);
-=======
     private static final Color FONDO = Color.BLACK;
     private static final Color ROSA = new Color(0xD6, 0x24, 0x9F);
     private static final Color ROSA_HOVER = new Color(0xE8, 0x4F, 0xB8);
@@ -44,29 +29,17 @@ public class Agregarcancion extends JDialog {
         setLayout(new BorderLayout(12, 12));
         inicializarComponentes();
     }
->>>>>>> Stashed changes
 
     public Agregarcancion() {
         this(null);
     }
 
-<<<<<<< Updated upstream
-    public void componentes() {
-        
-        bAvatar = new JButton("👤");
-        bAvatar.setBounds(20, 15, 35, 35);
-        bAvatar.setBackground(colorGrisCampo);
-        bAvatar.setForeground(colorRosa);
-        bAvatar.setFocusPainted(false);
-        bAvatar.setBorder(BorderFactory.createLineBorder(colorBorde));
-=======
     private void inicializarComponentes() {
         JLabel lblHeader = new JLabel("Agregar Nueva Canción", SwingConstants.LEFT);
         lblHeader.setForeground(ROSA);
         lblHeader.setFont(new Font("SansSerif", Font.BOLD, 20));
         lblHeader.setBorder(BorderFactory.createEmptyBorder(15, 20, 5, 20));
         add(lblHeader, BorderLayout.NORTH);
->>>>>>> Stashed changes
 
         JPanel panelCentral = new JPanel(new BorderLayout(15, 10));
         panelCentral.setBackground(FONDO);
@@ -75,19 +48,6 @@ public class Agregarcancion extends JDialog {
         JPanel formCampos = new JPanel(new GridLayout(7, 2, 8, 10));
         formCampos.setBackground(FONDO);
 
-<<<<<<< Updated upstream
-        bCerrar = new JButton("✕");
-        bCerrar.setBounds(20, 65, 35, 35);
-        bCerrar.setBackground(colorGrisCampo);
-        bCerrar.setForeground(colorRosa);
-        bCerrar.setFocusPainted(false);
-        bCerrar.setBorder(BorderFactory.createLineBorder(colorBorde));
-
-        lRecents = new JLabel("↕ Recents");
-        lRecents.setBounds(20, 115, 100, 25);
-        lRecents.setForeground(colorRosa);
-        lRecents.setFont(new Font("Arial", Font.PLAIN, 13));
-=======
         txtClave = agregarFila(formCampos, "Clave (ej. C07):");
         txtTitulo = agregarFila(formCampos, "Título:");
         txtArtista = agregarFila(formCampos, "Artista:");
@@ -97,7 +57,6 @@ public class Agregarcancion extends JDialog {
         txtDuracion = agregarFila(formCampos, "Duración (mm:ss):");
 
         panelCentral.add(formCampos, BorderLayout.CENTER);
->>>>>>> Stashed changes
 
         // Panel derecho para seleccionar Portada
         JPanel panelImg = new JPanel();
@@ -108,11 +67,6 @@ public class Agregarcancion extends JDialog {
                 BorderFactory.createLineBorder(ROSA, 1),
                 BorderFactory.createEmptyBorder(12, 10, 12, 10)));
 
-<<<<<<< Updated upstream
-        lCancion = new JLabel("Canción:");
-        lCancion.setBounds(20, 150, 75, 25);
-        lCancion.setForeground(colorRosa);
-=======
         lblPreviewImg = new JLabel();
         lblPreviewImg.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblPreviewImg.setPreferredSize(new Dimension(110, 110));
@@ -121,7 +75,6 @@ public class Agregarcancion extends JDialog {
         lblPreviewImg.setIcon(DatosCosmos.generarPortadaMusical("♪", "#D6249F", "#1A1A1A", 110, 110));
         panelImg.add(lblPreviewImg);
         panelImg.add(Box.createVerticalStrut(10));
->>>>>>> Stashed changes
 
         lblRutaImg = new JLabel("Portada automática", SwingConstants.CENTER);
         lblRutaImg.setForeground(Color.LIGHT_GRAY);
@@ -156,25 +109,6 @@ public class Agregarcancion extends JDialog {
                 BorderFactory.createLineBorder(ROSA), "Letra de la Canción", 0, 0, null, Color.WHITE));
         sur.add(scrollLetra, BorderLayout.CENTER);
 
-<<<<<<< Updated upstream
-       
-        String[] generos = {
-            "Clásica", "Electrónica", "Hip Hop", "Jazz", 
-            "Pop", "Punk", "Reggae", "Raeggetón", "Rock", "Regional mexicano"
-        };
-        cbGenero = new JComboBox<>(generos);
-        cbGenero.setBounds(100, 255, 160, 25);
-        cbGenero.setBackground(colorGrisCampo);
-        cbGenero.setForeground(Color.WHITE);
-        cbGenero.setBorder(BorderFactory.createLineBorder(colorBorde));
-
-        bSubirImagen = new JButton("Agregar imagen");
-        bSubirImagen.setBounds(20, 295, 240, 30);
-        bSubirImagen.setBackground(colorGrisCampo);
-        bSubirImagen.setForeground(colorRosa);
-        bSubirImagen.setFocusPainted(false);
-        bSubirImagen.setBorder(BorderFactory.createLineBorder(colorRosa));
-=======
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panelBotones.setBackground(FONDO);
 
@@ -186,112 +120,16 @@ public class Agregarcancion extends JDialog {
         btnLimpiar.setBorder(BorderFactory.createLineBorder(ROSA, 1));
         btnLimpiar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnLimpiar.addActionListener(e -> limpiar());
->>>>>>> Stashed changes
 
         JButton btnGuardar = crearBoton("Agregar Canción");
         btnGuardar.setPreferredSize(new Dimension(160, 38));
         btnGuardar.addActionListener(e -> guardar());
 
-<<<<<<< Updated upstream
-        tInformacion = new JTextArea();
-        tInformacion.setBackground(colorGrisPanel);
-        tInformacion.setForeground(Color.WHITE);
-        tInformacion.setCaretColor(Color.WHITE);
-        tInformacion.setEditable(false);
-
-        scrollInformacion = new JScrollPane(tInformacion);
-        scrollInformacion.setBounds(280, 150, 335, 200);
-        scrollInformacion.setBorder(BorderFactory.createLineBorder(colorBorde));
-
-        nuevo = new JButton("Nuevo");
-        nuevo.setBounds(405, 370, 100, 30);
-        nuevo.setBackground(colorGrisCampo);
-        nuevo.setForeground(Color.WHITE);
-        nuevo.setFocusPainted(false);
-        nuevo.setBorder(BorderFactory.createLineBorder(colorBorde));
-
-        agregar = new JButton("Agregar");
-        agregar.setBounds(515, 370, 100, 30);
-        agregar.setBackground(colorRosa);
-        agregar.setForeground(Color.WHITE);
-        agregar.setFocusPainted(false);
-        agregar.setBorder(BorderFactory.createLineBorder(colorRosa));
-
-        add(bAvatar);
-        add(lTitulo);
-        add(bPlus);
-        add(bCerrar);
-        add(lRecents);
-        add(bLista);
-        
-        add(lCancion);
-        add(tCancion);
-        add(lArtista);
-        add(tArtista);
-        add(lAlbum);
-        add(tAlbum);
-        add(lGenero);
-        add(cbGenero); 
-        
-        add(bSubirImagen);
-        add(lRutaImagen);
-        
-        add(scrollInformacion);
-        
-        add(nuevo);
-        add(agregar);
-
-        bSubirImagen.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivos de Imagen (*.jpg, *.png, *.jpeg)", "jpg", "png", "jpeg");
-            fileChooser.setFileFilter(filtro);
-            
-            int resultado = fileChooser.showOpenDialog(this);
-            if (resultado == JFileChooser.APPROVE_OPTION) {
-                File archivo = fileChooser.getSelectedFile();
-                rutaImagenSeleccionada = archivo.getName();
-                lRutaImagen.setText("Img: " + rutaImagenSeleccionada);
-            }
-        });
-
-        agregar.addActionListener(e -> {
-            String song = tCancion.getText();
-            String artist = tArtista.getText();
-            String album = tAlbum.getText();
-            String genre = (String) cbGenero.getSelectedItem(); 
-            String imgInfo = rutaImagenSeleccionada.isEmpty() ? "Sin imagen" : rutaImagenSeleccionada;
-
-            if (!song.isEmpty() && !artist.isEmpty()) {
-                tInformacion.append("• " + song + " | " + artist + " | " + album + " | " + genre + " | [" + imgInfo + "]\n");
-                tCancion.setText("");
-                tArtista.setText("");
-                tAlbum.setText("");
-                cbGenero.setSelectedIndex(0); 
-                lRutaImagen.setText("Ninguna imagen seleccionada");
-                rutaImagenSeleccionada = "";
-            } else {
-                JOptionPane.showMessageDialog(this, "Por favor completa al menos la canción y el artista.");
-            }
-        });
-
-        nuevo.addActionListener(e -> {
-            tCancion.setText("");
-            tArtista.setText("");
-            tAlbum.setText("");
-            cbGenero.setSelectedIndex(0); 
-            lRutaImagen.setText("Ninguna imagen seleccionada");
-            rutaImagenSeleccionada = "";
-            tCancion.requestFocus();
-        });
-        
-        bCerrar.addActionListener(e -> System.exit(0));
-=======
         panelBotones.add(btnLimpiar);
         panelBotones.add(btnGuardar);
         sur.add(panelBotones, BorderLayout.SOUTH);
 
         add(sur, BorderLayout.SOUTH);
->>>>>>> Stashed changes
     }
 
     private JTextField agregarFila(JPanel panel, String etiqueta) {
@@ -390,10 +228,5 @@ public class Agregarcancion extends JDialog {
 
         JOptionPane.showMessageDialog(this, "Canción '" + titulo + "' agregada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         dispose();
-    }
-}
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Agregarcancion());
     }
 }
