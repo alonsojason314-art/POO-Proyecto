@@ -18,7 +18,8 @@ public class EditarCancion extends JDialog {
 
     private JTextField txtBuscarClave;
     private JComboBox<String> comboCanciones;
-    private JTextField txtTitulo, txtArtista, txtAlbum, txtGenero, txtAnio, txtDuracion;
+    private JTextField txtTitulo, txtArtista, txtAlbum, txtAnio, txtDuracion;
+    private JComboBox<String> comboGenero;
     private JTextArea txtLetra;
     private JLabel lblPreviewImg, lblRutaImg;
     private String rutaImagenSeleccionada = "";
@@ -56,7 +57,6 @@ public class EditarCancion extends JDialog {
         panelBusqueda.add(comboCanciones);
         add(panelBusqueda, BorderLayout.NORTH);
 
-        // Panel central: Campos + Portada
         JPanel panelCentral = new JPanel(new BorderLayout(15, 10));
         panelCentral.setBackground(FONDO);
         panelCentral.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
@@ -67,13 +67,22 @@ public class EditarCancion extends JDialog {
         txtTitulo = agregarFila(formCampos, "Título:");
         txtArtista = agregarFila(formCampos, "Artista:");
         txtAlbum = agregarFila(formCampos, "Álbum:");
-        txtGenero = agregarFila(formCampos, "Género:");
-        txtAnio = agregarFila(formCampos, "Año:");
+
+        JLabel lblGen = new JLabel("Género:");
+        lblGen.setForeground(Color.WHITE);
+        formCampos.add(lblGen);
+
+        comboGenero = new JComboBox<>(DatosCosmos.GENEROS);
+        comboGenero.setBackground(CAMPO);
+        comboGenero.setForeground(Color.WHITE);
+        comboGenero.setBorder(BorderFactory.createLineBorder(ROSA, 1));
+        formCampos.add(comboGenero);
+
+        txtAnio = agregarFila(formCampos, "Año (4 dígitos):");
         txtDuracion = agregarFila(formCampos, "Duración (mm:ss):");
 
         panelCentral.add(formCampos, BorderLayout.CENTER);
 
-        // Subpanel lateral de Portada
         JPanel panelImg = new JPanel();
         panelImg.setBackground(CAMPO);
         panelImg.setPreferredSize(new Dimension(170, 210));
@@ -107,7 +116,6 @@ public class EditarCancion extends JDialog {
         panelCentral.add(panelImg, BorderLayout.EAST);
         add(panelCentral, BorderLayout.CENTER);
 
-        // Panel inferior: Letra y Guardar
         JPanel sur = new JPanel(new BorderLayout(8, 8));
         sur.setBackground(FONDO);
         sur.setBorder(BorderFactory.createEmptyBorder(5, 20, 15, 20));
@@ -219,7 +227,7 @@ public class EditarCancion extends JDialog {
         txtTitulo.setText(c.getTitulo());
         txtArtista.setText(c.getArtista());
         txtAlbum.setText(c.getAlbum());
-        txtGenero.setText(c.getGenero());
+        comboGenero.setSelectedItem(c.getGenero());
         txtAnio.setText(c.getAnio());
         txtDuracion.setText(c.getDuracion());
         txtLetra.setText(c.getLetra());
@@ -235,16 +243,40 @@ public class EditarCancion extends JDialog {
             return;
         }
 
-        cancionEncontrada.setTitulo(txtTitulo.getText().trim());
-        cancionEncontrada.setArtista(txtArtista.getText().trim());
-        cancionEncontrada.setAlbum(txtAlbum.getText().trim());
-        cancionEncontrada.setGenero(txtGenero.getText().trim());
-        cancionEncontrada.setAnio(txtAnio.getText().trim());
-        cancionEncontrada.setDuracion(txtDuracion.getText().trim());
+        String titulo = txtTitulo.getText().trim();
+        String artista = txtArtista.getText().trim();
+        String album = txtAlbum.getText().trim();
+        String genero = (String) comboGenero.getSelectedItem();
+        String anio = txtAnio.getText().trim();
+        String duracion = txtDuracion.getText().trim();
+
+        if (titulo.isEmpty() || artista.isEmpty() || album.isEmpty() || anio.isEmpty() || duracion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!DatosCosmos.esAnioValido(anio)) {
+            JOptionPane.showMessageDialog(this, "El Año debe ser un número de 4 dígitos entre 1900 y 2026.", "Año inválido", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!DatosCosmos.esDuracionValida(duracion)) {
+            JOptionPane.showMessageDialog(this, "La Duración debe tener formato mm:ss (ej. 03:45).", "Duración inválida", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        cancionEncontrada.setTitulo(titulo);
+        cancionEncontrada.setArtista(artista);
+        cancionEncontrada.setAlbum(album);
+        cancionEncontrada.setGenero(genero);
+        cancionEncontrada.setAnio(anio);
+        cancionEncontrada.setDuracion(duracion);
         cancionEncontrada.setLetra(txtLetra.getText());
         cancionEncontrada.setRutaImagen(rutaImagenSeleccionada);
 
-        JOptionPane.showMessageDialog(this, "Canción y portada actualizadas exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        DatosCosmos.ordenarYGuardar(); // Reordena alfabéticamente y guarda cambios en disco
+
+        JOptionPane.showMessageDialog(this, "Canción actualizada y guardada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         dispose();
     }
 }
