@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 
 import control.Cancion;
 import control.DatosCosmos;
