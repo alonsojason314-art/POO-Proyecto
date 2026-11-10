@@ -179,16 +179,36 @@ public class Agregarcancion extends JDialog {
         return btn;
     }
 
-    private void seleccionarImagen() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Imágenes (*.png, *.jpg, *.jpeg)", "png", "jpg", "jpeg"));
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            File archivo = chooser.getSelectedFile();
-            rutaImagenSeleccionada = archivo.getAbsolutePath();
-            lblRutaImg.setText(archivo.getName());
+private void seleccionarImagen() {
+    JFileChooser chooser = new JFileChooser();
+    chooser.setFileFilter(new FileNameExtensionFilter("Imágenes (*.png, *.jpg, *.jpeg)", "png", "jpg", "jpeg"));
+    if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        File archivoOrigen = chooser.getSelectedFile();
+        try {
+            // Carpeta 'portadas' en la raíz del proyecto
+            File carpetaDestino = new File("portadas");
+            if (!carpetaDestino.exists()) {
+                carpetaDestino.mkdirs();
+            }
+
+            // Guardar copia con nombre único o el nombre original
+            File archivoDestino = new File(carpetaDestino, archivoOrigen.getName());
+            java.nio.file.Files.copy(
+                archivoOrigen.toPath(),
+                archivoDestino.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            );
+
+            // Guardamos solo la RUTA RELATIVA: "portadas/archivo.png"
+            rutaImagenSeleccionada = "portadas/" + archivoOrigen.getName();
+            lblRutaImg.setText(archivoOrigen.getName());
             lblPreviewImg.setIcon(DatosCosmos.cargarIcono(rutaImagenSeleccionada, 110, 110));
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al copiar la imagen: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+}
 
     private void limpiar() {
         txtClave.setText("");
