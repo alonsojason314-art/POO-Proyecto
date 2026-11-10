@@ -1,163 +1,149 @@
 package gui;
 
 import control.Controlusuarios;
+import control.DatosCosmos;
 import control.Resultadologin;
-import javax.swing.*;
+import control.Usuario;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.*;
 
 public class MenuPrincipal extends JFrame {
 
-    // Colores de la interfaz
     private static final Color FONDO = Color.BLACK;
-    private static final Color ROSA = new Color(0xD6, 0x24, 0x9F);       // mismo color que las letras
+    private static final Color ROSA = new Color(0xD6, 0x24, 0x9F);
     private static final Color ROSA_HOVER = new Color(0xE8, 0x4F, 0xB8);
     private static final Color CAMPO = new Color(0x1A, 0x1A, 0x1A);
 
-    private static final Font FUENTE = new Font("Segoe UI", Font.PLAIN, 14);
-    private static final Font FUENTE_BOTON = new Font("Segoe UI", Font.BOLD, 14);
-
-    JLabel usu;
-    JTextField Tusu;
-    JPasswordField Ctsu;
-
-    // Control del login (un solo objeto para esta ventana)
-    private final Controlusuarios controlUsuarios = new Controlusuarios();
+    private JTextField txtUsuario;
+    private JPasswordField txtPassword;
+    private final Controlusuarios controlUsuarios;
 
     public MenuPrincipal() {
+        this.controlUsuarios = new Controlusuarios();
+        configurarVentana();
+        inicializarComponentes();
+    }
 
-        setTitle("Inicio de Sesión");
-        setSize(650, 520);
-        setLayout(null);
-        setResizable(false);
-        setLocationRelativeTo(null);
+    private void configurarVentana() {
+        setTitle("Cosmos - Iniciar Sesión");
+        setSize(460, 620);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
         getContentPane().setBackground(FONDO);
-
-        componentes();
-
-        setVisible(true);
+        setLayout(null);
     }
 
-    public void componentes() {
+    private void inicializarComponentes() {
+        // Icono CL.png en grande arriba
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(130, 20, 200, 170);
+        lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
+        ImageIcon logo = DatosCosmos.cargarIcono("/recursos/CL.png", 170, 160);
+        if (logo != null) lblLogo.setIcon(logo);
+        add(lblLogo);
 
-        // LOGO (flor), centrado arriba
-        ImageIcon iconoLogo = cargarImagen("/recursos/CL.png", 110);
-        JLabel imgLogo = new JLabel(iconoLogo);
-        imgLogo.setBounds(270, 20, iconoLogo.getIconWidth(), iconoLogo.getIconHeight());
-        add(imgLogo);
+        // Debajo cosmos_letras.png
+        JLabel lblLetras = new JLabel();
+        lblLetras.setBounds(100, 195, 260, 60);
+        lblLetras.setHorizontalAlignment(SwingConstants.CENTER);
+        ImageIcon letras = DatosCosmos.cargarIcono("/recursos/cosmos_letras.png", 230, 52);
+        if (letras != null) {
+            lblLetras.setIcon(letras);
+        } else {
+            lblLetras.setText("COSMOS");
+            lblLetras.setForeground(ROSA);
+            lblLetras.setFont(new Font("SansSerif", Font.BOLD, 28));
+        }
+        add(lblLetras);
 
-        // NOMBRE "COSMOS" (proporción original, sin deformarse)
-        ImageIcon iconoLetras = cargarImagen("/recursos/cosmos_letras.png", 220);
-        JLabel imgLetras = new JLabel(iconoLetras);
-        imgLetras.setBounds(215, 130, iconoLetras.getIconWidth(), iconoLetras.getIconHeight());
-        add(imgLetras);
+        JLabel lblUser = new JLabel("Usuario:");
+        lblUser.setForeground(Color.WHITE);
+        lblUser.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblUser.setBounds(80, 275, 300, 25);
+        add(lblUser);
 
-        // NOMBRE DE USUARIO
-        usu = new JLabel("Nombre Usuario");
-        usu.setForeground(Color.WHITE);
-        usu.setFont(FUENTE);
-        usu.setBounds(175, 225, 300, 22);
-        add(usu);
+        txtUsuario = new JTextField();
+        txtUsuario.setBounds(80, 305, 300, 38);
+        txtUsuario.setBackground(CAMPO);
+        txtUsuario.setForeground(Color.WHITE);
+        txtUsuario.setCaretColor(Color.WHITE);
+        txtUsuario.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ROSA, 1),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+        add(txtUsuario);
 
-        Tusu = new JTextField();
-        estilizarCampo(Tusu);
-        Tusu.setBounds(175, 250, 300, 36);
-        add(Tusu);
+        JLabel lblPass = new JLabel("Contraseña:");
+        lblPass.setForeground(Color.WHITE);
+        lblPass.setFont(new Font("SansSerif", Font.BOLD, 14));
+        lblPass.setBounds(80, 360, 300, 25);
+        add(lblPass);
 
-        // CONTRASEÑA
-        JLabel contra = new JLabel("Contraseña");
-        contra.setForeground(Color.WHITE);
-        contra.setFont(FUENTE);
-        contra.setBounds(175, 300, 300, 22);
-        add(contra);
+        txtPassword = new JPasswordField();
+        txtPassword.setBounds(80, 390, 300, 38);
+        txtPassword.setBackground(CAMPO);
+        txtPassword.setForeground(Color.WHITE);
+        txtPassword.setCaretColor(Color.WHITE);
+        txtPassword.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ROSA, 1),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+        add(txtPassword);
 
-        Ctsu = new JPasswordField();
-        estilizarCampo(Ctsu);
-        Ctsu.setBounds(175, 325, 300, 36);
-        add(Ctsu);
+        JButton btnIngresar = new JButton("Iniciar Sesión");
+        btnIngresar.setBounds(80, 460, 300, 42);
+        btnIngresar.setBackground(ROSA);
+        btnIngresar.setForeground(Color.WHITE);
+        btnIngresar.setFont(new Font("SansSerif", Font.BOLD, 15));
+        btnIngresar.setFocusPainted(false);
+        btnIngresar.setBorderPainted(false);
+        btnIngresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // BOTON ACCEDER
-        JButton acceder = crearBoton("Acceder");
-        acceder.setBounds(175, 395, 300, 40);
-        acceder.addActionListener(e -> iniciarSesion());
-        add(acceder);
+        btnIngresar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) { btnIngresar.setBackground(ROSA_HOVER); }
+            @Override
+            public void mouseExited(MouseEvent e) { btnIngresar.setBackground(ROSA); }
+        });
 
-        // Enter = Acceder
-        getRootPane().setDefaultButton(acceder);
+        btnIngresar.addActionListener(e -> autenticar());
+        txtPassword.addActionListener(e -> autenticar());
+        add(btnIngresar);
     }
 
-    // Evento del botón Acceder: valida con el control y muestra el resultado
-    private void iniciarSesion() {
-        Resultadologin r = controlUsuarios.validarLogin(Tusu.getText(), Ctsu.getPassword());
+    private void autenticar() {
+        String user = txtUsuario.getText().trim();
+        char[] pass = txtPassword.getPassword();
 
-        if (!r.isExitoso()) {
-            JOptionPane.showMessageDialog(this, r.getMensaje(), "Acceso denegado",
-                    JOptionPane.WARNING_MESSAGE);
-            Ctsu.setText("");
-            Ctsu.requestFocus();
+        if (user.isEmpty() || pass.length == 0) {
+            JOptionPane.showMessageDialog(this, "Por favor, llena todos los campos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        JOptionPane.showMessageDialog(this, r.getMensaje(), "Acceso correcto",
-                JOptionPane.INFORMATION_MESSAGE);
+        try {
+            Resultadologin res = controlUsuarios.validarLogin(user, pass);
+            if (res != null && res.isExitoso()) {
+                dispose();
+                Usuario u = res.getUsuario();
+                String nombreMostrar = (u != null) ? u.getNombre() : user;
 
-        if (r.getUsuario().esAdministrador()) {
-            // TODO: abrir la ventana del administrador
-        } else {
-            // TODO: abrir la ventana del reproductor (usuario normal)
-        }
-    }
-
-    // Carga una imagen y la escala al ancho indicado conservando su proporción
-    private ImageIcon cargarImagen(String ruta, int ancho) {
-        ImageIcon original = new ImageIcon(getClass().getResource(ruta));
-        int alto = original.getIconHeight() * ancho / original.getIconWidth();
-        Image img = original.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
-    }
-
-    // Estilo oscuro con borde rosa para JTextField y JPasswordField
-    private void estilizarCampo(JTextField campo) {
-        campo.setBackground(CAMPO);
-        campo.setForeground(Color.WHITE);
-        campo.setCaretColor(ROSA);
-        campo.setFont(FUENTE);
-        campo.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(ROSA, 1),
-                BorderFactory.createEmptyBorder(0, 10, 0, 10)));
-    }
-
-    // Botón rosa con esquinas redondeadas y efecto al pasar el mouse / presionar
-    private JButton crearBoton(String texto) {
-        JButton boton = new JButton(texto) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                if (getModel().isPressed()) {
-                    g2.setColor(ROSA.darker());
-                } else if (getModel().isRollover()) {
-                    g2.setColor(ROSA_HOVER);
+                if (u != null && u.esAdministrador()) {
+                    new VistaAdmin(nombreMostrar).setVisible(true);
                 } else {
-                    g2.setColor(ROSA);
+                    new VistaUsuario(nombreMostrar).setVisible(true);
                 }
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-                g2.dispose();
-                super.paintComponent(g);
+                return;
+            } else if (res != null) {
+                JOptionPane.showMessageDialog(this, res.getMensaje(), "Acceso denegado", JOptionPane.WARNING_MESSAGE);
+                return;
             }
-        };
-        boton.setFont(FUENTE_BOTON);
-        boton.setForeground(Color.WHITE);
-        boton.setContentAreaFilled(false);
-        boton.setBorderPainted(false);
-        boton.setFocusPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return boton;
+        } catch (Exception ignored) {}
+
+        JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.", "Error de acceso", JOptionPane.ERROR_MESSAGE);
     }
 
-    
-    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(MenuPrincipal::new);
+        SwingUtilities.invokeLater(() -> new MenuPrincipal().setVisible(true));
     }
 }
