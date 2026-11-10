@@ -1,4 +1,4 @@
-package gui;
+package adm;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -9,12 +9,12 @@ public final class Agregarcancion extends JFrame {
 
     JLabel lTitulo, lRecents, lCancion, lArtista, lAlbum, lGenero, lRutaImagen;
     JButton bAvatar, bPlus, bCerrar, bLista, bSubirImagen, nuevo, agregar;
-    JTextField tCancion, tArtista, tAlbum, tGenero;
+    JTextField tCancion, tArtista, tAlbum;
+    JComboBox<String> cbGenero; 
     JTextArea tInformacion;
     JScrollPane scrollInformacion;
     String rutaImagenSeleccionada = "";
 
-    
     Color colorFondo = new Color(20, 20, 20);
     Color colorRosa = new Color(230, 0, 115);
     Color colorGrisPanel = new Color(30, 30, 30);
@@ -37,7 +37,6 @@ public final class Agregarcancion extends JFrame {
 
     public void componentes() {
         
-        
         bAvatar = new JButton("👤");
         bAvatar.setBounds(20, 15, 35, 35);
         bAvatar.setBackground(colorGrisCampo);
@@ -57,7 +56,6 @@ public final class Agregarcancion extends JFrame {
         bPlus.setFocusPainted(false);
         bPlus.setBorder(BorderFactory.createLineBorder(colorRosa));
 
-       
         bCerrar = new JButton("✕");
         bCerrar.setBounds(20, 65, 35, 35);
         bCerrar.setBackground(colorGrisCampo);
@@ -65,7 +63,6 @@ public final class Agregarcancion extends JFrame {
         bCerrar.setFocusPainted(false);
         bCerrar.setBorder(BorderFactory.createLineBorder(colorBorde));
 
-        
         lRecents = new JLabel("↕ Recents");
         lRecents.setBounds(20, 115, 100, 25);
         lRecents.setForeground(colorRosa);
@@ -78,7 +75,6 @@ public final class Agregarcancion extends JFrame {
         bLista.setFocusPainted(false);
         bLista.setBorder(null);
 
-     
         lCancion = new JLabel("Canción:");
         lCancion.setBounds(20, 150, 75, 25);
         lCancion.setForeground(colorRosa);
@@ -116,14 +112,17 @@ public final class Agregarcancion extends JFrame {
         lGenero.setBounds(20, 255, 75, 25);
         lGenero.setForeground(colorRosa);
 
-        tGenero = new JTextField();
-        tGenero.setBounds(100, 255, 160, 25);
-        tGenero.setBackground(colorGrisCampo);
-        tGenero.setForeground(Color.WHITE);
-        tGenero.setCaretColor(Color.WHITE);
-        tGenero.setBorder(BorderFactory.createLineBorder(colorBorde));
+       
+        String[] generos = {
+            "Clásica", "Electrónica", "Hip Hop", "Jazz", 
+            "Pop", "Punk", "Reggae", "Raeggetón", "Rock", "Regional mexicano"
+        };
+        cbGenero = new JComboBox<>(generos);
+        cbGenero.setBounds(100, 255, 160, 25);
+        cbGenero.setBackground(colorGrisCampo);
+        cbGenero.setForeground(Color.WHITE);
+        cbGenero.setBorder(BorderFactory.createLineBorder(colorBorde));
 
-        
         bSubirImagen = new JButton("Agregar imagen");
         bSubirImagen.setBounds(20, 295, 240, 30);
         bSubirImagen.setBackground(colorGrisCampo);
@@ -136,7 +135,6 @@ public final class Agregarcancion extends JFrame {
         lRutaImagen.setForeground(Color.LIGHT_GRAY);
         lRutaImagen.setFont(new Font("Arial", Font.PLAIN, 11));
 
-        
         tInformacion = new JTextArea();
         tInformacion.setBackground(colorGrisPanel);
         tInformacion.setForeground(Color.WHITE);
@@ -147,7 +145,6 @@ public final class Agregarcancion extends JFrame {
         scrollInformacion.setBounds(280, 150, 335, 200);
         scrollInformacion.setBorder(BorderFactory.createLineBorder(colorBorde));
 
-        
         nuevo = new JButton("Nuevo");
         nuevo.setBounds(405, 370, 100, 30);
         nuevo.setBackground(colorGrisCampo);
@@ -162,7 +159,6 @@ public final class Agregarcancion extends JFrame {
         agregar.setFocusPainted(false);
         agregar.setBorder(BorderFactory.createLineBorder(colorRosa));
 
-        
         add(bAvatar);
         add(lTitulo);
         add(bPlus);
@@ -177,7 +173,7 @@ public final class Agregarcancion extends JFrame {
         add(lAlbum);
         add(tAlbum);
         add(lGenero);
-        add(tGenero);
+        add(cbGenero); 
         
         add(bSubirImagen);
         add(lRutaImagen);
@@ -187,7 +183,6 @@ public final class Agregarcancion extends JFrame {
         add(nuevo);
         add(agregar);
 
-        
         bSubirImagen.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivos de Imagen (*.jpg, *.png, *.jpeg)", "jpg", "png", "jpeg");
@@ -201,12 +196,11 @@ public final class Agregarcancion extends JFrame {
             }
         });
 
-        
         agregar.addActionListener(e -> {
             String song = tCancion.getText();
             String artist = tArtista.getText();
             String album = tAlbum.getText();
-            String genre = tGenero.getText();
+            String genre = (String) cbGenero.getSelectedItem(); 
             String imgInfo = rutaImagenSeleccionada.isEmpty() ? "Sin imagen" : rutaImagenSeleccionada;
 
             if (!song.isEmpty() && !artist.isEmpty()) {
@@ -214,7 +208,7 @@ public final class Agregarcancion extends JFrame {
                 tCancion.setText("");
                 tArtista.setText("");
                 tAlbum.setText("");
-                tGenero.setText("");
+                cbGenero.setSelectedIndex(0); 
                 lRutaImagen.setText("Ninguna imagen seleccionada");
                 rutaImagenSeleccionada = "";
             } else {
@@ -222,12 +216,11 @@ public final class Agregarcancion extends JFrame {
             }
         });
 
-        
         nuevo.addActionListener(e -> {
             tCancion.setText("");
             tArtista.setText("");
             tAlbum.setText("");
-            tGenero.setText("");
+            cbGenero.setSelectedIndex(0); 
             lRutaImagen.setText("Ninguna imagen seleccionada");
             rutaImagenSeleccionada = "";
             tCancion.requestFocus();
@@ -235,6 +228,11 @@ public final class Agregarcancion extends JFrame {
         
         bCerrar.addActionListener(e -> System.exit(0));
     }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Agregarcancion());
+    }
+}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Agregarcancion());
