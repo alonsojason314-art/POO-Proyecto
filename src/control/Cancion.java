@@ -1,6 +1,10 @@
 package control;
 
-public class Cancion {
+import java.io.Serializable;
+
+public class Cancion implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String clave;
     private String titulo;
     private String genero;
