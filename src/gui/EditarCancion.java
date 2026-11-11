@@ -195,18 +195,31 @@ public class EditarCancion extends JDialog {
         return btn;
     }
 
-    private void seleccionarImagen() {
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes (*.jpg, *.png, *.jpeg)", "jpg", "png", "jpeg");
-        chooser.setFileFilter(filtro);
-
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            File arch = chooser.getSelectedFile();
-            rutaImagenSeleccionada = arch.getAbsolutePath();
+private void seleccionarImagen() {
+    JFileChooser chooser = new JFileChooser();
+    FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes (*.jpg, *.png, *.jpeg)", "jpg", "png", "jpeg");
+    chooser.setFileFilter(filtro);
+    if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        File arch = chooser.getSelectedFile();
+        try {
+            File carpetaDestino = new File("portadas");
+            if (!carpetaDestino.exists()) {
+                carpetaDestino.mkdirs();
+            }
+            File archivoDestino = new File(carpetaDestino, arch.getName());
+            java.nio.file.Files.copy(
+                arch.toPath(),
+                archivoDestino.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            );
+            rutaImagenSeleccionada = "portadas/" + arch.getName();
             lblRutaImg.setText(arch.getName());
             lblPreviewImg.setIcon(DatosCosmos.cargarIcono(rutaImagenSeleccionada, 110, 110));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al copiar la imagen: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+}
 
     private void cargarPorClave() {
         String q = txtBuscarClave.getText().trim();
